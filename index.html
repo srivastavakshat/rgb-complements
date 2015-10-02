@@ -1,0 +1,193 @@
+<!doctype html>
+<html ng-app="colors">
+	<head>
+	
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.min.js"></script>
+		<title>Complementary Colors</title>
+		<link rel="stylesheet" type="text/css" href="http://cloud.typography.com/6608932/614446/css/fonts.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css">
+
+		<!-- Start/End Directive-Range Directive by Ben Nadel -->
+		<script type="text/javascript">
+			var app=angular.module("colors",[]);app.directive("bnRange",function($compile){var rangePattern=/(-?\d+)(\.\.\.?)(-?\d+)/i;var cachedSets={};return({compile:compile,priority:1001,restirct:"A",terminal:true});function compile(tElement,tAttributes){var input=tAttributes.bnRange;if(missingRange(input)){throw(new Error("Missing valid range in the form of M..N (exclusive) or M...N (inclusive)."));}
+			tAttributes.$set("ngRepeat",input.replace(rangePattern,replacePatternWithSet));tAttributes.$set(tAttributes.$attr.bnRange,null);return(link);}
+			function link(scope,element,attributes){$compile(element,null,1001)(scope);scope.Math=window.Math;}
+			function buildSet(from,to,isExclusive){var set=[];if(from<=to){for(var i=from;i<=to;i++){set.push(i);}}else{for(var i=from;i>=to;i--){set.push(i);}}
+			if(isExclusive){set.pop();}
+			return(set);}
+			function missingRange(input){return(String(input).search(rangePattern)===-1);}
+			function replacePatternWithSet(range,start,operator,end){if(cachedSets[range]){return(cachedSets[range]);}
+			var from=parseInt(start,10);var to=parseInt(end,10);var isExclusive=(operator==="..");var set=buildSet(from,to,isExclusive);return(cachedSets[range]=angular.toJson(set));}});
+		</script>
+		<style>
+			body {
+				font-family: 'Whitney SSm A', 'Whitney SSm B';
+				font-weight: 400;
+				font-style: normal;
+				margin: 0;
+				counter-reset: pair;
+				text-rendering: optimizeLegibility;
+				-webkit-text-rendering: optimizeLegibility;
+				-webkit-font-smoothing: antialiased;
+				overflow-x: hidden;
+			}
+			.color {
+				float: left;
+				width: 45%;
+				font-family: sans-serif;
+				box-sizing: border-box;
+				font-size: 1em;
+			}
+			.swatch {
+				box-sizing: border-box;
+				padding: 0.5em;
+				width: 45%;
+			}
+			.pair {
+				tranform: scale(1);
+				-webkit-tranform: scale(1);
+				transition: 0.2s ease;
+				z-index: 1;
+				position: relative;
+			}
+			.colors {
+				margin-bottom: 50px;
+			}
+			.pair:hover {
+				transform: scale(1.3);
+				z-index: 2;
+				-webkit-transform: scale(1.3);
+				box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+			}
+			.pair:before {
+				counter-increment: pair;
+				content: counter(pair);
+				position: absolute;
+				top: 50%;
+				left: 0%;
+				transform: translateY(-50%);
+				width: 5%;
+				text-align: center;
+			}
+			.clearfix {
+				clear: both;
+			}
+			.right {
+				text-align: left;
+				float: right;
+				margin-right: 5%;
+			}
+			.left {
+				text-align: right;
+				float: left;
+				margin-left: 5%;
+			}
+			header {
+				/*text-align: center;*/
+				
+				padding: 0 5%;
+			}
+			header h1 {
+				font-size: 1em;
+				margin-top: 1.8em;
+				text-transform: uppercase;
+				font-weight: 800;
+				margin-bottom: 0;
+			}
+			header p {
+				margin-top: 0.67em;
+				line-height: 1.67em;
+				margin-bottom: 0;
+			}
+			header p:last-child {
+				margin-top: 0.67em;
+				margin-bottom: 1.35em;
+			}
+			a {
+				color: #69e;
+				text-decoration: none;
+				cursor: pointer !important;
+				z-index: 1;
+			}
+			a:hover {
+				color: #4F79BD;
+			}
+			footer {
+				position: fixed;
+				z-index: 3;
+				bottom: 0.5rem;
+				right: 0.5rem;
+				font-size: 1rem;
+				padding: 0.5rem 0.8rem;
+				background: rgba(255, 255, 255, 0.8);
+				border-radius: 4px;
+			}
+			.flip {
+				-moz-transform: scale(-1, 1);
+				-webkit-transform: scale(-1, 1);
+				-o-transform: scale(-1, 1);
+				-ms-transform: scale(-1, 1);
+				transform: scale(-1, 1);
+				display: inline-block;
+			}
+		</style>
+		
+	</head>
+	
+	<body>
+		
+		<header>
+		
+			<h1>RGB Complements</h1>
+			<p>All 180 combinations listed below will produce perfect middle gray neutrals <span style="color: rgb(128, 128, 128)">[rgb(128, 128, 128)]</span> when blended.</p>
+			<p><a href="http://blog.asmartbear.com/color-wheels.html">More Info</a> &middot; <a href="">Fork this on Github</a></p>
+		
+		</header>
+		
+		<div>
+
+			<div class="colors">
+
+				<div bn-range="h in 0...179">
+				
+					<div class="pair animated fadeIn">
+	
+						<div class="left swatch" ng-style="{ 'background-color': 'hsla({{ h }}, 100%, 50%, 1)' }" ng-math="{{ l = 0.5; s = 1; c = (1-(2*l-1))*1; x = c * (1 - Math.abs((h/60)%2 - 1)); m = l - c/2; x = Math.round((x + m) * 255); c = Math.round((c + m) * 255); hn = h; }}">
+
+							<span ng-if="h < 60">rgb({{ c }}, {{ x }}, {{ m }})</span>
+							<span ng-if="h >= 60 && h < 120">rgb({{ x }}, {{ c }}, {{ m }})</span>
+							<span ng-if="h >= 120 && h < 180">rgb({{ m }}, {{ c }}, {{ x }})</span>
+							<span ng-if="h >= 180 && h < 240">rgb({{ m }}, {{ x }}, {{ c }})</span>
+							<span ng-if="h >= 240 && h < 300">rgb({{ x }}, {{ m }}, {{ c }})</span>
+							<span ng-if="h >= 300 && h < 360">rgb({{ c }}, {{ m }}, {{ x }})</span>
+				
+						</div>
+
+						<div class="right swatch" ng-ho="{{ ho = hn + 180 }}" ng-style="{ 'background-color': 'hsla({{ ho }}, 100%, 50%, 1)' }" ng-math="{{ lo = 0.5; so = 1; co = (1-(2*lo-1))*1; xo = co * (1 - Math.abs((ho/60)%2 - 1)); mo = lo - co/2; xo = Math.round((xo + mo) * 255); co = Math.round((co + mo) * 255); }}">
+						
+							<span ng-if="ho < 60">({{ hn }}, {{ xo }}, {{ mo }})</span>
+							<span ng-if="ho >= 60 && ho < 120">rgb({{ xo }}, {{ co }}, {{ mo }})</span>
+							<span ng-if="ho >= 120 && ho < 180">rgb({{ mo }}, {{ co }}, {{ xo }})</span>
+							<span ng-if="ho >= 180 && ho < 240">rgb({{ mo }}, {{ xo }}, {{ co }})</span>
+							<span ng-if="ho >= 240 && ho < 300">rgb({{ xo }}, {{ mo }}, {{ co }})</span>
+							<span ng-if="ho >= 300 && ho < 360">rgb({{ co }}, {{ mo }}, {{ xo }})</span>
+										
+						</div>
+
+						<div class="clearfix"></div>
+				
+					</div>
+				
+				</div>		
+			
+			</div>
+
+		</div>
+
+		<footer>
+			Copyleft <span class="flip">&copy;</span> <a href="http://aksh.at/">Akshat Srivastava</a>
+		</footer>
+
+	</body>
+
+</html>
